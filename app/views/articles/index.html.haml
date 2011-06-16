@@ -1,0 +1,29 @@
+%h1 Articles
+
+.articles
+  - @articles.each do |article|
+    .article
+      %h2= article.title
+      %p= article.body
+
+.navigation
+  = link_to "Next #{Article.per_page}", articles_path(:page => (@page + 1))
+
+:javascript
+  $(document).ready(function(){
+    $('.articles').infinitescroll({
+      navSelector: "div.navigation a:first",
+      nextSelector: "div.navigation a:first",
+      itemSelector: ".article",
+      // NOTE: disable loading message animation to fix navigation show/hide race condition
+      //loadingMsgRevealSpeed: 0
+    });
+
+    $('.articles').infinitescroll('binding', 'unbind');
+
+    $('div.navigation a:first').click(function(e){
+        e.preventDefault();
+        $('.articles').infinitescroll('retrieve');
+        $(this).css('display', 'block');
+    });
+  });
